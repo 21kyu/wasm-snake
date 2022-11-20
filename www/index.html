@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        #content-wrapper {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
-<h1>Hello World</h1>
+<div id="content-wrapper">
+    Map
+    <canvas id="snake-canvas"></canvas>
+</div>
 <script src="./bootstrap.js"></script>
 </body>
 </html>

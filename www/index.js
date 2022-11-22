@@ -28,5 +28,37 @@ init().then(_ => {
         ctx.stroke()
     }
 
-    drawWorld()
+    function drawSnake() {
+        const snakeIdx = world.snake_head_idx()
+        const col = snakeIdx % worldWidth
+        const row = Math.floor(snakeIdx / worldWidth)
+
+        ctx.beginPath()
+        ctx.fillRect(
+            col * CELL_SIZE,
+            row * CELL_SIZE,
+            CELL_SIZE,
+            CELL_SIZE
+        )
+
+        ctx.stroke()
+    }
+
+    function paint() {
+        drawWorld()
+        drawSnake()
+    }
+
+    function update() {
+        setTimeout(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            world.update()
+            paint()
+            // the method takes a callback to invoked before the next repaint
+            requestAnimationFrame(update)
+        }, 100)
+    }
+
+    paint()
+    update()
 })

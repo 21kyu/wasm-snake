@@ -1,16 +1,36 @@
-import init, {World} from "wasm-snake"
+import init, {Direction, World} from "wasm-snake"
 
 init().then(_ => {
-    const CELL_SIZE = 15;
+    const CELL_SIZE = 15
+    const WORLD_WIDTH = 8
 
-    const world = World.new()
+    const snakeSpawnIdx = Date.now() % (WORLD_WIDTH * WORLD_WIDTH)
+
+    const world = World.new(WORLD_WIDTH, snakeSpawnIdx)
     const worldWidth = world.width()
 
-    const canvas = document.getElementById("snake-canvas")
+    const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas")
     const ctx = canvas.getContext("2d")
 
     canvas.width = worldWidth * CELL_SIZE
     canvas.height = worldWidth * CELL_SIZE
+
+    document.addEventListener("keydown", e => {
+        switch (e.code) {
+            case "ArrowUp":
+                world.change_snake_dir(Direction.Up)
+                break
+            case "ArrowRight":
+                world.change_snake_dir(Direction.Right)
+                break
+            case "ArrowDown":
+                world.change_snake_dir(Direction.Down)
+                break
+            case "ArrowLeft":
+                world.change_snake_dir(Direction.Left)
+                break
+        }
+    })
 
     function drawWorld() {
         ctx.beginPath()
@@ -50,13 +70,14 @@ init().then(_ => {
     }
 
     function update() {
+        const fps = 10
         setTimeout(() => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             world.update()
             paint()
             // the method takes a callback to invoked before the next repaint
             requestAnimationFrame(update)
-        }, 100)
+        }, 1000 / fps)
     }
 
     paint()

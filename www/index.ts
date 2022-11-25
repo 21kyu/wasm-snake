@@ -1,6 +1,6 @@
 import init, {Direction, World} from "wasm-snake"
 
-init().then(_ => {
+init().then(wasm => {
     const CELL_SIZE = 15
     const WORLD_WIDTH = 8
 
@@ -49,17 +49,26 @@ init().then(_ => {
     }
 
     function drawSnake() {
-        const snakeIdx = world.snake_head_idx()
-        const col = snakeIdx % worldWidth
-        const row = Math.floor(snakeIdx / worldWidth)
-
-        ctx.beginPath()
-        ctx.fillRect(
-            col * CELL_SIZE,
-            row * CELL_SIZE,
-            CELL_SIZE,
-            CELL_SIZE
+        const snakeCells = new Uint32Array(
+            wasm.memory.buffer,
+            world.snake_cells(),
+            world.snake_length()
         )
+
+        snakeCells.forEach((cellIdx, i) => {
+            const col = cellIdx % worldWidth
+            const row = Math.floor(cellIdx / worldWidth)
+
+            ctx.fillStyle = i === 0 ? "#7878db" : "#000000"
+
+            ctx.beginPath()
+            ctx.fillRect(
+                col * CELL_SIZE,
+                row * CELL_SIZE,
+                CELL_SIZE,
+                CELL_SIZE
+            )
+        })
 
         ctx.stroke()
     }
@@ -73,7 +82,7 @@ init().then(_ => {
         const fps = 10
         setTimeout(() => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
-            world.update()
+            world.step()
             paint()
             // the method takes a callback to invoked before the next repaint
             requestAnimationFrame(update)

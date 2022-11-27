@@ -1,15 +1,16 @@
-import init, {Direction, World} from "wasm-snake"
+import init, {Direction, GameStatus, World} from "wasm-snake"
 import {rnd} from "./utils/rnd";
 
 init().then(wasm => {
     const CELL_SIZE = 15
-    const WORLD_WIDTH = 4
+    const WORLD_WIDTH = 8
     const snakeSpawnIdx = rnd(WORLD_WIDTH * WORLD_WIDTH)
 
     const world = World.new(WORLD_WIDTH, snakeSpawnIdx)
     const worldWidth = world.width()
 
     const gameStatus = document.getElementById("game-status")
+    const points = document.getElementById("points")
     const gameControlBtn = document.getElementById("game-control-btn")
     const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas")
     const ctx = canvas.getContext("2d")
@@ -27,16 +28,16 @@ init().then(wasm => {
             case "Space":
                 control()
                 break
-            case "KeyI":
+            case "KeyW":
                 world.change_snake_dir(Direction.Up)
                 break
-            case "KeyL":
+            case "KeyD":
                 world.change_snake_dir(Direction.Right)
                 break
-            case "KeyK":
+            case "KeyS":
                 world.change_snake_dir(Direction.Down)
                 break
-            case "KeyJ":
+            case "KeyA":
                 world.change_snake_dir(Direction.Left)
                 break
         }
@@ -115,6 +116,7 @@ init().then(wasm => {
 
     function drawGameStatus() {
         gameStatus.textContent = world.game_status_text()
+        points.textContent = world.points().toString()
     }
 
     function paint() {
@@ -125,7 +127,14 @@ init().then(wasm => {
     }
 
     function play() {
-        const fps = 3
+        const status = world.game_status()
+
+        if (status == GameStatus.Won || status == GameStatus.Lost) {
+            gameControlBtn.textContent = "Replay"
+            return
+        }
+
+        const fps = 60
         setTimeout(() => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             world.step()

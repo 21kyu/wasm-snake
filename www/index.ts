@@ -23,7 +23,6 @@ init().then(wasm => {
     })
 
     document.addEventListener("keydown", e => {
-        console.log(e.code)
         switch (e.code) {
             case "Space":
                 control()
@@ -134,7 +133,7 @@ init().then(wasm => {
             return
         }
 
-        const fps = 60
+        const fps = 6
         setTimeout(() => {
             ctx.clearRect(0, 0, canvas.width, canvas.height)
             world.step()

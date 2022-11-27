@@ -11,9 +11,18 @@ Build the Snake game with WebAssembly (using rust)
 ### How to use
 
 ```shell
+# /wasm-snake/
 wasm-pack build --target web
 ```
 
 ```shell
-npm run dev
+# /wasm-sname/www/
+npm run build
+```
+
+```shell
+# /wasm-snake/
+npm start
+
+# connect by entering localhost:3000 in your browser
 ```
